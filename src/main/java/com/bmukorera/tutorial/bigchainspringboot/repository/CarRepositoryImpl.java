@@ -40,7 +40,10 @@ public class CarRepositoryImpl implements CarRepository {
     }
 
     public CarRepositoryImpl() {
-        buildKeys();
+        buildKeys();// builds the KeyPair required for accessing and saving transaction to the blockchain using the public and private keys defined
+
+        /*This configures a connection to the Bigchain instance, we are using localhost to connect to a local instance
+        * but this can be replaced by any instance you may also have*/
         BigchainDbConfigBuilder
                 .baseUrl("http://localhost:9984/")
                 .setup();
@@ -49,7 +52,7 @@ public class CarRepositoryImpl implements CarRepository {
     @Override
     public Car save(Car car) {
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> assetData = mapper.convertValue(car, Map.class);
+        Map<String, Object> assetData = mapper.convertValue(car, Map.class);//convert Car Object to Map which will be saved as the Asset data
         try {
             Transaction createTransaction = BigchainDbTransactionBuilder
                     .init()
@@ -94,6 +97,7 @@ public class CarRepositoryImpl implements CarRepository {
         return carList;
     }
 
+    /* builds the KeyPair required for accessing and saving transaction to the blockchain using the public and private keys defined*/
     private void buildKeys(){
         try{
             X509EncodedKeySpec encoded = new X509EncodedKeySpec(Utils.hexToBytes(PUBLIC_KEY));
